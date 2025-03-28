@@ -1,0 +1,1229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Moving Quote - Muvmi</title>
+    <style>
+        :root {
+            --primary: #F16622;
+            --primary-dark: #d14d0d;
+            --primary-light: #ff8f54;
+            --secondary: #F5F7FA;
+            --secondary-dark: #E4E7EB;
+            --text: #1F2937;
+            --text-light: #6B7280;
+            --white: #FFFFFF;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.05);
+            --shadow-lg: 0 10px 15px rgba(0,0,0,0.05);
+            --border-radius-sm: 4px;
+            --border-radius-md: 6px;
+            --border-radius-lg: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--secondary);
+            color: var(--text);
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .form-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--secondary-dark);
+        }
+
+        .form-header-content {
+            text-align: left;
+        }
+
+        .form-header h1 {
+            font-size: 24px;
+            margin-bottom: 8px;
+            color: var(--text);
+            font-family: 'Manrope', sans-serif;
+            font-weight: 700;
+        }
+
+        .form-header p {
+            color: var(--text-light);
+            font-size: 15px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .form-container {
+            background: var(--white);
+            border-radius: 0;
+            box-shadow: var(--shadow-md);
+            padding: 40px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        /* Adding an explicit class for grouped fields */
+        .field-group {
+            display: flex;
+            gap: 20px;
+            grid-column: 1 / -1;
+        }
+
+        .field-group .form-field {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        /* Special handling for image upload in field group */
+        .field-group .form-field .image-upload-container {
+            max-height: 120px;
+            overflow-y: auto;
+            padding-bottom: 5px;
+        }
+
+        .form-field {
+            margin-bottom: 20px;
+        }
+
+        .form-field.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-field label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: var(--text);
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Style for text in brackets */
+        .form-field label span {
+            color: var(--text-light);
+            font-weight: 400;
+            font-size: 13px;
+        }
+
+        .form-field input,
+        .form-field select,
+        .form-field textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid var(--secondary-dark);
+            border-radius: var(--border-radius-md);
+            font-size: 14px;
+            transition: all 0.2s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Date input specific styles */
+        input[type="date"] {
+            appearance: none;
+            -webkit-appearance: none;
+            padding: 12px;
+            border: 1px solid var(--secondary-dark);
+            border-radius: var(--border-radius-md);
+            font-size: 16px;
+            font-family: 'Inter', sans-serif;
+            width: 100%;
+            background-color: var(--white);
+        }
+
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            cursor: pointer;
+            opacity: 0.8;
+            padding: 5px;
+            color: var(--primary);
+            background-position: right center;
+            background-size: 20px;
+            margin-right: 5px;
+        }
+
+        input[type="date"]::-webkit-datetime-edit {
+            padding: 0;
+        }
+
+        input[type="date"]::-webkit-inner-spin-button {
+            display: none;
+        }
+
+        /* Specific class for our calendar picker to apply additional styles */
+        .calendar-date-picker {
+            cursor: pointer;
+            transition: border-color 0.3s ease;
+        }
+
+        .calendar-date-picker:hover {
+            border-color: var(--primary);
+        }
+
+        .calendar-date-picker:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(241, 102, 34, 0.25);
+        }
+
+        .date-helper-text {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-top: 4px;
+        }
+
+        .form-field textarea {
+            height: 120px;
+            resize: vertical;
+        }
+
+        .form-field button {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius-md);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            margin-top: 10px;
+            font-family: 'Space Grotesk', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-field button:hover {
+            background: var(--primary-dark);
+        }
+
+        .logo {
+            width: 40px;
+            transition: transform 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .logo a {
+            display: block;
+            width: 100%;
+        }
+
+        .logo img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Image upload styles */
+        .image-upload-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .image-upload-box {
+            width: 100px;
+            height: 100px;
+            border: 2px dashed var(--secondary-dark);
+            border-radius: var(--border-radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            background-color: var(--secondary);
+            transition: all 0.3s ease;
+        }
+
+        .image-upload-box:hover {
+            border-color: var(--primary);
+            background-color: var(--secondary-dark);
+        }
+
+        .image-upload-box.has-image {
+            border-style: solid;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .image-upload-box.has-image .plus-icon {
+            display: none;
+        }
+
+        .plus-icon {
+            font-size: 30px;
+            color: var(--text-light);
+        }
+
+        .image-upload-box .remove-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+            color: var(--text);
+            display: none;
+        }
+
+        .image-upload-box.has-image:hover .remove-btn {
+            display: flex;
+        }
+
+        .hidden-file-input {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0;
+            }
+            
+            .form-container {
+                border-radius: 0;
+                padding: 20px;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: var(--white);
+            padding: 30px;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-lg);
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .modal-content h3 {
+            color: var(--text);
+            margin-bottom: 15px;
+            font-family: 'Manrope', sans-serif;
+            font-size: 18px;
+        }
+
+        .modal-content p {
+            color: var(--text-light);
+            margin-bottom: 25px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .modal-button {
+            padding: 10px 20px;
+            border-radius: var(--border-radius-md);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Space Grotesk', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .modal-button.cancel {
+            background-color: var(--secondary);
+            color: var(--text);
+            border: none;
+        }
+
+        .modal-button.cancel:hover {
+            background-color: var(--secondary-dark);
+        }
+
+        .modal-button.proceed {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+        }
+
+        .modal-button.proceed:hover {
+            background-color: var(--primary-dark);
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <div class="form-header">
+                <div class="form-header-content">
+                    <h1>Detalji transporta</h1>
+                    <p>Pomožite nam da razumemo vaše potrebe kako bismo dobili tačne ponude</p>
+                </div>
+                <div class="logo">
+                    <a href="main.html">
+                        <img src="IMAGES/muvmi-logo.png" alt="Muvmi">
+                    </a>
+                </div>
+            </div>
+            <form id="details-form">
+                <!-- Add address fields at the top -->
+                <div class="form-grid">
+                    <div class="form-field">
+                        <label for="pickup_address">Adresa preuzimanja</label>
+                        <input type="text" id="pickup_address" name="pickup_address" required>
+                    </div>
+                    <div class="form-field">
+                        <label for="delivery_address">Adresa dostave</label>
+                        <input type="text" id="delivery_address" name="delivery_address" required>
+                    </div>
+                </div>
+                <!-- Form fields will be dynamically inserted here -->
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Form configuration for each category
+        const formConfigs = {
+            furniture: [
+                { type: 'text', name: 'description', label: 'Ukratko opišite šta premeštate', fullWidth: true },
+                { type: 'select', name: 'largest_item_size', label: 'Veličina najvećeg predmeta',
+                  options: ['Mali (stane u auto)', 'Srednji (stane u kombi)', 'Veliki (zahteva kamion)'] },
+                { type: 'number', name: 'item_count', label: 'Broj predmeta' },
+                { type: 'number', name: 'pickup_floor', label: 'Sprat (mesto utovara)' },
+                { type: 'number', name: 'delivery_floor', label: 'Sprat (mesto istovara)' },
+                { type: 'select', name: 'has_elevator_pickup', label: 'Da li zgrada ima lift (mesto utovara)',
+                  options: ['Da', 'Ne'] },
+                { type: 'select', name: 'has_elevator_delivery', label: 'Da li zgrada ima lift (mesto istovara)',
+                  options: ['Da', 'Ne'] },
+                { type: 'select', name: 'pickup_access', label: 'Pristup mestu utovara',
+                  options: ['Lak pristup', 'Stepenice', 'Lift', 'Otežan pristup'] },
+                { type: 'select', name: 'delivery_access', label: 'Pristup mestu istovara',
+                  options: ['Lak pristup', 'Stepenice', 'Lift', 'Otežan pristup'] },
+                { type: 'text', name: 'parking_info_pickup', label: 'Parking info (mesto utovara)' },
+                { type: 'text', name: 'parking_info_delivery', label: 'Parking info (mesto istovara)' },
+                { type: 'text', name: 'special_instructions', label: 'Specijalne instrukcije (npr. koristite dvorište, pozovite pre nego što stignete...)', fullWidth: true },
+                { type: 'textarea', name: 'additional_details', label: 'Dodatni detalji', fullWidth: true },
+                { type: 'image_upload', name: 'images', label: 'Slike (Strogo preporučeno!)', required: false },
+                { type: 'select', name: 'moving_date', label: 'Datum',
+                  options: ['Hitno', 'U toku nedelje', 'Izaberite datum', 'Još uvek ne znam datum'] },
+            ],
+            boxes: [
+                { type: 'text', name: 'description', label: 'Ukratko opišite šta premeštate', fullWidth: true },
+                { type: 'number', name: 'box_count', label: 'Broj kutija' },
+                { type: 'select', name: 'box_sizes', label: 'Veličine kutija',
+                  options: ['Male', 'Srednje', 'Velike'] },
+                { type: 'select', name: 'handling', label: 'Potrebno rukovanje',
+                  options: ['Standardno', 'Pažljivo', 'Specijalno'] },
+                { type: 'text', name: 'special_handling_equipment', label: 'Oprema za specijalno rukovanje', hidden: true, depends: { field: 'handling', value: 'specijalno' } },
+                { type: 'select', name: 'loading_help', label: 'Potrebna pomoć oko utovara',
+                  options: ['Da', 'Ne'] },
+                { type: 'select', name: 'unloading_help', label: 'Potrebna pomoć oko istovara',
+                  options: ['Da', 'Ne'] },
+                { type: 'select', name: 'pickup_access', label: 'Pristup mestu utovara',
+                  options: ['Lak pristup', 'Stepenice', 'Lift', 'Otežan pristup'] },
+                { type: 'select', name: 'delivery_access', label: 'Pristup mestu istovara',
+                  options: ['Lak pristup', 'Stepenice', 'Lift', 'Otežan pristup'] },
+                { type: 'number', name: 'pickup_floor', label: 'Sprat (mesto utovara)' },
+                { type: 'number', name: 'delivery_floor', label: 'Sprat (mesto istovara)' },
+                { type: 'text', name: 'special_instructions', label: 'Specijalne instrukcije (npr. koristite dvorište, pozovite pre nego što stignete...)', fullWidth: true },
+                { type: 'textarea', name: 'additional_details', label: 'Dodatni detalji', fullWidth: true },
+                { type: 'image_upload', name: 'images', label: 'Slike (Preporučeno!)', required: false },
+                { type: 'select', name: 'moving_date', label: 'Datum',
+                  options: ['Hitno', 'U toku nedelje', 'Izaberite datum', 'Još uvek ne znam datum'] },
+            ],
+            cargo: [
+                { type: 'text', name: 'description', label: 'Ukratko opišite šta premeštate', fullWidth: true },
+                { type: 'textarea', name: 'cargo_description', label: 'Opis tereta', fullWidth: true },
+                { type: 'textarea', name: 'packaging_description', label: 'Opis pakovanja', fullWidth: true },
+                { type: 'text', name: 'dimensions', label: 'Dimenzije' },
+                { type: 'number', name: 'total_weight', label: 'Ukupna težina' },
+                { type: 'select', name: 'loading_equipment', label: 'Oprema za utovar',
+                  options: ['Nema', 'Rampa', 'Viljuškar', 'Paletar', 'Ostalo (Molimo specifirajte)'] },
+                { type: 'select', name: 'unloading_equipment', label: 'Oprema za istovar',
+                  options: ['Nema', 'Rampa', 'Viljuškar', 'Paletar', 'Ostalo (Molimo specifirajte)'] },
+                { type: 'select', name: 'pickup_access', label: 'Pristup mestu utovara',
+                  options: ['Lak pristup', 'Stepenice', 'Lift', 'Otežan pristup'] },
+                { type: 'select', name: 'delivery_access', label: 'Pristup mestu istovara',
+                  options: ['Lak pristup', 'Stepenice', 'Lift', 'Otežan pristup'] },
+                { type: 'number', name: 'pickup_floor', label: 'Sprat (mesto utovara)' },
+                { type: 'number', name: 'delivery_floor', label: 'Sprat (mesto istovara)' },
+                { type: 'select', name: 'loading_help_needed', label: 'Da li vam je potrebna pomoć pri utovaru?',
+                  options: ['Da', 'Ne'] },
+                { type: 'select', name: 'unloading_help_needed', label: 'Da li vam je potrebna pomoć pri istovaru?',
+                  options: ['Da', 'Ne'] },
+                { type: 'image_upload', name: 'images', label: 'Slike (Preporučeno!)', required: false },
+                { type: 'text', name: 'special_instructions', label: 'Specijalne instrukcije (npr. koristite dvorište, pozovite pre nego što stignete...)', fullWidth: true },
+                { type: 'textarea', name: 'additional_details', label: 'Dodatni detalji', fullWidth: true },
+                { type: 'select', name: 'moving_date', label: 'Datum',
+                  options: ['Hitno', 'U toku nedelje', 'Izaberite datum', 'Još uvek ne znam datum'] },
+            ],
+            vehicles: [
+                { type: 'text', name: 'make', label: 'Marka' },
+                { type: 'text', name: 'model', label: 'Model' },
+                { type: 'select', name: 'drivable', label: 'U voznom stanju',
+                  options: ['Da', 'Ne'] },
+                { type: 'select', name: 'transport_method', label: 'Kako želite da vam se vozilo premesti',
+                  options: ['Bez posebnih zahteva', 'Vožen', 'Transportovan (otvoren prevoz)', 'Transportovan (zatvoren prevoz)'] },
+                { type: 'select', name: 'pickup_access', label: 'Pristup mestu utovara',
+                  options: ['Lak pristup', 'Stepenice', 'Lift', 'Otežan pristup'] },
+                { type: 'select', name: 'delivery_access', label: 'Pristup mestu istovara',
+                  options: ['Lak pristup', 'Stepenice', 'Lift', 'Otežan pristup'] },
+                { type: 'image_upload', name: 'images', label: 'Slike (Preporučeno!)', required: false },
+                { type: 'text', name: 'special_instructions', label: 'Specijalne instrukcije (npr. koristite dvorište, pozovite pre nego što stignete...)', fullWidth: true },
+                { type: 'textarea', name: 'additional_details', label: 'Dodatni detalji', fullWidth: true },
+                { type: 'select', name: 'moving_date', label: 'Datum',
+                  options: ['Hitno', 'U toku nedelje', 'Izaberite datum', 'Još uvek ne znam datum'] },
+            ],
+            moving: [
+                { type: 'select', name: 'property_type_pickup', label: 'Izaberite tip imovine (mesto utovara)',
+                  options: ['Kuća', 'Stan', 'Duplex', 'Vikendica'] },
+                { type: 'select', name: 'property_type_delivery', label: 'Izaberite tip imovine (mesto istovara)',
+                  options: ['Kuća', 'Stan', 'Duplex', 'Vikendica'] },
+                { type: 'number', name: 'pickup_floor', label: 'Sprat (mesto utovara)' },
+                { type: 'number', name: 'delivery_floor', label: 'Sprat (mesto istovara)' },
+                { type: 'select', name: 'has_elevator_pickup', label: 'Da li zgrada ima lift (mesto utovara)',
+                  options: ['Da', 'Ne'] },
+                { type: 'select', name: 'has_elevator_delivery', label: 'Da li zgrada ima lift (mesto istovara)',
+                  options: ['Da', 'Ne'] },
+                { type: 'text', name: 'parking_info_pickup', label: 'Parking info (mesto utovara)' },
+                { type: 'text', name: 'parking_info_delivery', label: 'Parking info (mesto istovara)' },
+                { type: 'image_upload', name: 'images', label: 'Slike (Preporučeno!)', required: false },  
+                { type: 'number', name: 'number_of_rooms', label: 'Broj soba' },
+                { type: 'select', name: 'moving_date', label: 'Datum selidbe',
+                  options: ['Hitno', 'U toku nedelje', 'Izaberite datum', 'Još uvek ne znam datum'] },
+                { type: 'textarea', name: 'notes', label: 'Napomene (specifični uslovi, ograničenje pristupa...)', fullWidth: true }
+            ],
+            vehicle_parts: [
+                { type: 'text', name: 'description', label: 'Ukratko opišite šta premeštate', fullWidth: true },
+                { type: 'select', name: 'loading_help', label: 'Potrebna pomoć oko utovara',
+                  options: ['Da', 'Ne'] },
+                { type: 'select', name: 'unloading_help', label: 'Potrebna pomoć oko istovara',
+                  options: ['Da', 'Ne'] },
+                { type: 'select', name: 'pickup_access', label: 'Pristup mestu utovara',
+                  options: ['Lak pristup', 'Stepenice', 'Lift', 'Otežan pristup'] },
+                { type: 'select', name: 'delivery_access', label: 'Pristup mestu istovara',
+                  options: ['Lak pristup', 'Stepenice', 'Lift', 'Otežan pristup'] },
+                { type: 'text', name: 'special_instructions', label: 'Specijalne instrukcije (npr. koristite dvorište, pozovite pre nego što stignete...)', fullWidth: true },
+                { type: 'textarea', name: 'additional_details', label: 'Dodatni detalji', fullWidth: true },
+                { type: 'image_upload', name: 'images', label: 'Slike (Preporučeno!)', required: false },
+                { type: 'select', name: 'moving_date', label: 'Datum',
+                  options: ['Hitno', 'U toku nedelje', 'Izaberite datum', 'Još uvek ne znam datum'] },
+            ],
+            animals: [
+                { type: 'text', name: 'description', label: 'Ukratko opišite šta premeštate', fullWidth: true },
+                { type: 'text', name: 'breed', label: 'Rasa' },
+                { type: 'number', name: 'weight', label: 'Težina (kg)' },
+                { type: 'select', name: 'vaccines', label: 'Da li je vaš ljubimac primio sve vakcine?',
+                  options: ['Da', 'Ne'] },
+                { type: 'select', name: 'transport_cage', label: 'Da li će vaš ljubimac biti u transportnom kavezu?',
+                  options: ['Ne', 'Da'] },
+                { type: 'number', name: 'cage_length', label: 'Transportni kavez: Dužina (cm)', hidden: true, depends: { field: 'transport_cage', value: 'da' } },
+                { type: 'number', name: 'cage_width', label: 'Transportni kavez: Širina (cm)', hidden: true, depends: { field: 'transport_cage', value: 'da' } },
+                { type: 'number', name: 'cage_height', label: 'Transportni kavez: Visina (cm)', hidden: true, depends: { field: 'transport_cage', value: 'da' } },
+                { type: 'select', name: 'special_needs', label: 'Da li vaš ljubimac ima specijalne potrebe?',
+                  options: ['Ne', 'Da'] },
+                { type: 'text', name: 'special_needs_description', label: 'Specijalne potrebe ljubimca', fullWidth: true, hidden: true, depends: { field: 'special_needs', value: 'da' } },
+                { type: 'image_upload', name: 'images', label: 'Slike (Preporučeno!)', required: false },
+                { type: 'select', name: 'moving_date', label: 'Datum',
+                  options: ['Hitno', 'U toku nedelje', 'Izaberite datum', 'Još uvek ne znam datum'] },
+            ],
+            other: [
+                { type: 'text', name: 'description', label: 'Ukratko opišite šta premeštate', fullWidth: true },
+                { type: 'text', name: 'special_instructions', label: 'Specijalne instrukcije (npr. koristite dvorište, pozovite pre nego što stignete...)', fullWidth: true },
+                { type: 'textarea', name: 'additional_details', label: 'Dodatni detalji', fullWidth: true },
+                { type: 'image_upload', name: 'images', label: 'Slike (Preporučeno!)', required: false },
+                { type: 'select', name: 'moving_date', label: 'Datum',
+                  options: ['Hitno', 'U toku nedelje', 'Izaberite datum', 'Još uvek ne znam datum'] },
+            ],
+            construction_waste: [
+                { type: 'text', name: 'description', label: 'Ukratko opišite šta premeštate', fullWidth: true },
+                { type: 'select', name: 'waste_type', label: 'Vrsta materijala za odvoz',
+                  options: ['Beton', 'Cigle', 'Zemlja', 'Drvo', 'Mešoviti građevinski otpad', 'Ostalo'] },
+                { type: 'text', name: 'other_waste_type', label: 'Ostalo (molimo navedite)', hidden: true, depends: { field: 'waste_type', value: 'ostalo' } },
+                { type: 'number', name: 'waste_volume', label: 'Količina otpada (m³)' },
+                { type: 'select', name: 'loading_help_needed', label: 'Da li je potreban utovar',
+                  options: ['Da', 'Ne'] },
+                { type: 'select', name: 'location_accessibility', label: 'Pristupačnost lokacije',
+                  options: ['Lako dostupno', 'Uska ulica', 'Privatno dvorište', 'Otežan prilaz'] },
+                { type: 'text', name: 'parking_info', label: 'Parking info' },
+                { type: 'image_upload', name: 'images', label: 'Slike (Preporučeno!)', required: false },
+                { type: 'select', name: 'moving_date', label: 'Datum',
+                  options: ['Hitno', 'U toku nedelje', 'Izaberite datum', 'Još uvek ne znam datum'] },
+                { type: 'textarea', name: 'notes', label: 'Napomene (specifični uslovi, ograničenje pristupa...)', fullWidth: true, required: false }
+            ]
+        };
+
+        // Common fields that appear in all forms
+        const commonFields = [
+            { type: 'select', name: 'handling', label: 'Potrebno rukovanje',
+              options: ['Standardno', 'Pažljivo', 'Specijalno'] },
+            { type: 'select', name: 'loading_help', label: 'Potrebna pomoć oko utovara/istovara',
+              options: ['Da', 'Ne'] },
+            { type: 'select', name: 'pickup_access', label: 'Pristup mestu utovara',
+              options: ['Lak pristup', 'Stepenice', 'Lift', 'Otežan pristup'] },
+            { type: 'select', name: 'delivery_access', label: 'Pristup mestu istovara',
+              options: ['Lak pristup', 'Stepenice', 'Lift', 'Otežan pristup'] },
+            { type: 'select', name: 'insurance_needed', label: 'Potrebno osiguranje',
+              options: ['Da', 'Ne'] },
+            { type: 'textarea', name: 'special_requirements', label: 'Posebni zahtevi ili napomene', fullWidth: true }
+        ];
+
+        // For all fields in formConfigs, set required: true or required: false as appropriate
+        function updateRequiredFields() {
+            // Process each category in formConfigs
+            Object.keys(formConfigs).forEach(category => {
+                formConfigs[category].forEach(field => {
+                    // Set default to required
+                    field.required = true;
+                    
+                    // Exceptions: make these fields optional
+                    if (field.name === 'special_instructions' || 
+                        field.name === 'additional_details' || 
+                        field.name === 'images' || 
+                        field.name === 'notes') {
+                        field.required = false;
+                    }
+                });
+            });
+            
+            // Also update common fields
+            commonFields.forEach(field => {
+                // Special requirements is similar to notes/additional details
+                if (field.name === 'special_requirements') {
+                    field.required = false;
+                } else {
+                    field.required = true;
+                }
+            });
+        }
+
+        // Call this function immediately after the formConfigs definition
+        document.addEventListener('DOMContentLoaded', function() {
+            // Update required attributes for all form fields
+            updateRequiredFields();
+            
+            // Get data from URL parameters
+            const params = new URLSearchParams(window.location.search);
+            const category = params.get('category');
+            const pickup = params.get('pickup');
+            const delivery = params.get('delivery');
+
+            if (category && pickup && delivery) {
+                // Store the initial data
+                window.moveData = { category, pickup, delivery };
+                
+                // Pre-fill the address fields
+                document.getElementById('pickup_address').value = pickup;
+                document.getElementById('delivery_address').value = delivery;
+                
+                // Show the appropriate form based on category
+                showCategoryForm(category);
+            } else {
+                // If no parameters, redirect back to main page
+                window.location.href = 'main.html';
+            }
+        });
+
+        function showCategoryForm(category) {
+            const formContainer = document.getElementById('details-form');
+            
+            // Store the address fields
+            const addressFields = formContainer.querySelector('.form-grid');
+            
+            // Clear the form container
+            formContainer.innerHTML = '';
+            
+            // Add back the address fields
+            formContainer.appendChild(addressFields);
+            
+            // Create form fields
+            const formGrid = document.createElement('div');
+            formGrid.className = 'form-grid';
+            
+            // For moving category, create specific field groupings
+            if (category === 'moving') {
+                const fieldConfigs = formConfigs[category] || [];
+                
+                // First group: property types (already in pairs by default in the grid)
+                formGrid.appendChild(createFormField(fieldConfigs[0])); // property_type_pickup
+                formGrid.appendChild(createFormField(fieldConfigs[1])); // property_type_delivery
+                
+                // Second group: floor levels - create a grouped row
+                const floorGroup = document.createElement('div');
+                floorGroup.className = 'field-group';
+                floorGroup.appendChild(createFormField(fieldConfigs[2])); // pickup_floor
+                floorGroup.appendChild(createFormField(fieldConfigs[3])); // delivery_floor
+                formGrid.appendChild(floorGroup);
+                
+                // Third group: elevator access - create a grouped row
+                const elevatorGroup = document.createElement('div');
+                elevatorGroup.className = 'field-group';
+                elevatorGroup.appendChild(createFormField(fieldConfigs[4])); // has_elevator_pickup
+                elevatorGroup.appendChild(createFormField(fieldConfigs[5])); // has_elevator_delivery
+                formGrid.appendChild(elevatorGroup);
+                
+                // Fourth group: parking info - create a grouped row
+                const parkingGroup = document.createElement('div');
+                parkingGroup.className = 'field-group';
+                parkingGroup.appendChild(createFormField(fieldConfigs[6])); // parking_info_pickup
+                parkingGroup.appendChild(createFormField(fieldConfigs[7])); // parking_info_delivery
+                formGrid.appendChild(parkingGroup);
+                
+                // Image upload should be full width due to its special display requirements
+                formGrid.appendChild(createFormField(fieldConfigs[8])); // images
+                
+                // Add number of rooms as a regular field
+                formGrid.appendChild(createFormField(fieldConfigs[9])); // number_of_rooms
+                
+                // Remaining fields
+                for (let i = 10; i < fieldConfigs.length; i++) {
+                    formGrid.appendChild(createFormField(fieldConfigs[i]));
+                }
+            } else if (category === 'vehicles') {
+                // For vehicles category, create specific field groupings similar to moving
+                const fieldConfigs = formConfigs[category] || [];
+                
+                // First group: make and model in a row
+                const makeModelGroup = document.createElement('div');
+                makeModelGroup.className = 'field-group';
+                makeModelGroup.appendChild(createFormField(fieldConfigs[0])); // make
+                makeModelGroup.appendChild(createFormField(fieldConfigs[1])); // model
+                formGrid.appendChild(makeModelGroup);
+                
+                // Add drivable status
+                formGrid.appendChild(createFormField(fieldConfigs[2])); // drivable
+                
+                // Add transport method 
+                formGrid.appendChild(createFormField(fieldConfigs[3])); // transport_method
+                
+                // Add pickup access
+                formGrid.appendChild(createFormField(fieldConfigs[4])); // pickup_access
+                
+                // Add delivery access
+                formGrid.appendChild(createFormField(fieldConfigs[5])); // delivery_access
+                
+                // Add image upload (should be full width)
+                formGrid.appendChild(createFormField(fieldConfigs[6])); // images
+                
+                // Add special instructions (full width)
+                formGrid.appendChild(createFormField(fieldConfigs[7])); // special_instructions
+                
+                // Add additional details (full width)
+                formGrid.appendChild(createFormField(fieldConfigs[8])); // additional_details
+                
+                // Add moving date
+                formGrid.appendChild(createFormField(fieldConfigs[9])); // moving_date
+            } else if (category === 'furniture' || category === 'other' || category === 'boxes' || 
+                       category === 'cargo' || category === 'vehicles' || category === 'vehicle_parts' || 
+                       category === 'animals' || category === 'construction_waste') {
+                // Special handling for these categories...
+                const fieldConfigs = formConfigs[category] || [];
+                
+                // Add fields before images
+                for (let i = 0; i < fieldConfigs.length; i++) {
+                    // Skip image_upload and moving_date as they'll be handled separately
+                    if (fieldConfigs[i].type !== 'image_upload' && fieldConfigs[i].name !== 'moving_date') {
+                        formGrid.appendChild(createFormField(fieldConfigs[i]));
+                    }
+                }
+                
+                // Add image upload (find it in the config)
+                const imageField = fieldConfigs.find(field => field.type === 'image_upload');
+                if (imageField) {
+                    formGrid.appendChild(createFormField(imageField));
+                }
+                
+                // Add moving_date field (find it in the config)
+                const dateField = fieldConfigs.find(field => field.name === 'moving_date');
+                if (dateField) {
+                    formGrid.appendChild(createFormField(dateField));
+                }
+            } else {
+                // For other categories, follow the regular flow
+            const categoryFields = formConfigs[category] || [];
+            categoryFields.forEach(field => {
+                formGrid.appendChild(createFormField(field));
+            });
+            
+                // Add common fields only for categories not already handled
+                if (category !== 'moving' && category !== 'furniture' && category !== 'other' && 
+                    category !== 'boxes' && category !== 'cargo' && category !== 'vehicles' && 
+                    category !== 'vehicle_parts' && category !== 'animals' && category !== 'construction_waste') {
+            commonFields.forEach(field => {
+                formGrid.appendChild(createFormField(field));
+            });
+                }
+            }
+            
+            // Add submit button
+            const submitDiv = document.createElement('div');
+            submitDiv.className = 'form-field full-width';
+            const submitBtn = document.createElement('button');
+            submitBtn.type = 'submit';
+            submitBtn.textContent = 'Pošalji zahtev';
+            submitDiv.appendChild(submitBtn);
+            formGrid.appendChild(submitDiv);
+
+            // Add return to home link
+            const homeLinkDiv = document.createElement('div');
+            homeLinkDiv.className = 'form-field full-width';
+            homeLinkDiv.style.textAlign = 'center';
+            homeLinkDiv.style.marginTop = '-10px';
+            homeLinkDiv.style.marginBottom = '20px';
+            const homeLink = document.createElement('a');
+            homeLink.href = 'main.html';
+            homeLink.textContent = 'Povratak na početnu';
+            homeLink.style.color = 'var(--text-light)';
+            homeLink.style.textDecoration = 'none';
+            homeLink.style.fontSize = '13px';
+            homeLink.style.fontFamily = 'Space Grotesk, sans-serif';
+            homeLink.style.fontWeight = '500';
+            homeLink.style.letterSpacing = '1px';
+            homeLink.style.textTransform = 'uppercase';
+            homeLink.style.transition = 'color 0.2s ease';
+            homeLink.addEventListener('mouseover', function() {
+                this.style.color = 'var(--primary)';
+            });
+            homeLink.addEventListener('mouseout', function() {
+                this.style.color = 'var(--text-light)';
+            });
+            homeLinkDiv.appendChild(homeLink);
+            formGrid.appendChild(homeLinkDiv);
+            
+            // Add modal HTML
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <h3>Napustiti formu?</h3>
+                    <p>Vaši podaci neće biti sačuvani i moraćete da počnete od početka.</p>
+                    <div class="modal-buttons">
+                        <button class="modal-button cancel">Otkaži</button>
+                        <button class="modal-button proceed">Nastavi</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+
+            // Modify home link click handler
+            homeLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                modal.style.display = 'flex';
+            });
+
+            // Add modal button handlers
+            modal.querySelector('.cancel').addEventListener('click', function() {
+                modal.style.display = 'none';
+            });
+
+            modal.querySelector('.proceed').addEventListener('click', function() {
+                window.location.href = 'main.html';
+            });
+
+            // Close modal when clicking outside
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+            
+            // Add name and phone fields before the submit button
+            const nameField = document.createElement('div');
+            nameField.className = 'form-field';
+            const nameLabel = document.createElement('label');
+            nameLabel.textContent = 'Vaše ime';
+            const nameInput = document.createElement('input');
+            nameInput.type = 'text';
+            nameInput.name = 'name';
+            nameInput.required = true;
+            nameField.appendChild(nameLabel);
+            nameField.appendChild(nameInput);
+            formGrid.insertBefore(nameField, submitDiv);
+
+            const phoneField = document.createElement('div');
+            phoneField.className = 'form-field';
+            const phoneLabel = document.createElement('label');
+            phoneLabel.textContent = 'Broj telefona';
+            const phoneInput = document.createElement('input');
+            phoneInput.type = 'tel';
+            phoneInput.name = 'phone';
+            phoneInput.required = true;
+            phoneInput.pattern = '[0-9]*';
+            phoneInput.maxLength = 10;
+            
+            // Create a wrapper div for the phone input
+            const phoneWrapper = document.createElement('div');
+            phoneWrapper.style.position = 'relative';
+            phoneWrapper.style.display = 'flex';
+            phoneWrapper.style.alignItems = 'center';
+            
+            // Create the prefix span
+            const prefixSpan = document.createElement('span');
+            prefixSpan.textContent = '+381\u2009'; // Using thin space for even smaller spacing
+            prefixSpan.style.position = 'absolute';
+            prefixSpan.style.left = '12px';
+            prefixSpan.style.color = 'var(--text)';
+            prefixSpan.style.fontSize = '14px';
+            prefixSpan.style.fontFamily = 'Inter, sans-serif';
+            
+            // Style the input to accommodate the prefix
+            phoneInput.style.paddingLeft = '52px'; // Reduced from 55px to 52px
+            
+            // Add prefix and validation
+            phoneInput.addEventListener('input', function(e) {
+                // Remove any non-numeric characters
+                this.value = this.value.replace(/[^0-9]/g, '');
+                
+                // Limit to 10 digits (excluding prefix)
+                if (this.value.length > 10) {
+                    this.value = this.value.slice(0, 10);
+                }
+            });
+
+            // Add the prefix span and input to the wrapper
+            phoneWrapper.appendChild(prefixSpan);
+            phoneWrapper.appendChild(phoneInput);
+            
+            phoneField.appendChild(phoneLabel);
+            phoneField.appendChild(phoneWrapper);
+            formGrid.insertBefore(phoneField, submitDiv);
+            
+            formContainer.appendChild(formGrid);
+            
+            // Handle form submission
+            formContainer.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const formData = new FormData(e.target);
+                
+                // Handle the date format properly
+                const specificDateInput = e.target.querySelector('input[name="specific_date"]');
+                if (specificDateInput && specificDateInput.getAttribute('data-formatted-date')) {
+                    // Use the formatted date in dd/mm/yyyy format
+                    formData.set('specific_date', specificDateInput.getAttribute('data-formatted-date'));
+                }
+                
+                const details = Object.fromEntries(formData);
+                
+                // Combine with initial data
+                const finalData = { ...window.moveData, ...details };
+                console.log('Final form data:', finalData);
+                // Here you would typically send this data to your server
+            });
+        }
+
+        function createFormField(field) {
+            const fieldDiv = document.createElement('div');
+            fieldDiv.className = `form-field ${field.fullWidth ? 'full-width' : ''}`;
+            
+            // If field is hidden by default, hide the field div
+            if (field.hidden) {
+                fieldDiv.style.display = 'none';
+                
+                // Add data attribute for dependency
+                if (field.depends) {
+                    fieldDiv.dataset.dependsOn = field.depends.field;
+                    fieldDiv.dataset.dependsValue = field.depends.value;
+                }
+            }
+            
+            const label = document.createElement('label');
+            // Split the label text and wrap bracketed text in spans
+            const labelText = field.label.replace(/\((.*?)\)/g, '<span>($1)</span>');
+            label.innerHTML = labelText;
+            fieldDiv.appendChild(label);
+            
+            let input;
+            if (field.type === 'textarea') {
+                input = document.createElement('textarea');
+                input.name = field.name;
+                input.required = field.required !== false;
+            } else if (field.type === 'select') {
+                input = document.createElement('select');
+                input.name = field.name;
+                input.required = field.required !== false;
+                field.options.forEach(opt => {
+                    const option = document.createElement('option');
+                    option.value = opt.toLowerCase().replace(/ /g, '_');
+                    option.textContent = opt;
+                    input.appendChild(option);
+                });
+                
+                // Add event listener for handling dependent fields
+                input.addEventListener('change', function() {
+                    // Check if any fields depend on this select
+                    const dependentFields = document.querySelectorAll(`[data-depends-on="${field.name}"]`);
+                    if (dependentFields.length > 0) {
+                        const value = this.value.toLowerCase();
+                        dependentFields.forEach(depField => {
+                            if (depField.dataset.dependsValue === value) {
+                                depField.style.display = '';
+                                
+                                // Mark inputs as required when shown
+                                const inputs = depField.querySelectorAll('input, select, textarea');
+                                inputs.forEach(input => input.required = true);
+                            } else {
+                                depField.style.display = 'none';
+                                
+                                // Mark inputs as not required when hidden
+                                const inputs = depField.querySelectorAll('input, select, textarea');
+                                inputs.forEach(input => input.required = false);
+                            }
+                        });
+                    }
+                });
+                
+                // Add special handling for date selection
+                if (field.name === 'moving_date') {
+                    input.addEventListener('change', function() {
+                        // Remove existing date picker if any
+                        const existingDatePicker = document.getElementById('date_picker_container');
+                        if (existingDatePicker) {
+                            existingDatePicker.remove();
+                        }
+                        
+                        // If "Izaberite datum" is selected, show a date picker
+                        if (this.value === 'izaberite_datum') {
+                            const datePickerContainer = document.createElement('div');
+                            datePickerContainer.id = 'date_picker_container';
+                            datePickerContainer.className = 'form-field';
+                            
+                            const datePickerLabel = document.createElement('label');
+                            datePickerLabel.textContent = 'Izaberite datum';
+                            datePickerContainer.appendChild(datePickerLabel);
+                            
+                            // Create a proper calendar date picker
+                            const datePicker = document.createElement('input');
+                            datePicker.type = 'date';
+                            datePicker.name = 'specific_date';
+                            datePicker.className = 'calendar-date-picker';
+                            datePicker.required = true;
+                            
+                            // Set min attribute to today's date to prevent selecting past dates
+                            const today = new Date();
+                            const yyyy = today.getFullYear();
+                            const mm = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
+                            const dd = String(today.getDate()).padStart(2, '0');
+                            const formattedToday = `${yyyy}-${mm}-${dd}`;
+                            datePicker.min = formattedToday;
+                            
+                            // Format the date as DD/MM/YYYY when changed
+                            datePicker.addEventListener('change', function() {
+                                if (this.value) {
+                                    const [year, month, day] = this.value.split('-');
+                                    this.setAttribute('data-formatted-date', `${day}/${month}/${year}`);
+                                }
+                            });
+                            
+                            datePickerContainer.appendChild(datePicker);
+                            
+                            // Insert after the current field
+                            fieldDiv.parentNode.insertBefore(datePickerContainer, fieldDiv.nextSibling);
+                        }
+                    });
+                }
+            } else if (field.type === 'image_upload') {
+                // Create a hidden input for storing the files
+                const hiddenInput = document.createElement('input');
+                hiddenInput.type = 'file';
+                hiddenInput.className = 'hidden-file-input';
+                hiddenInput.name = field.name;
+                hiddenInput.multiple = true;
+                hiddenInput.accept = 'image/*';
+                hiddenInput.required = field.required !== false;
+                
+                // Create container for the upload boxes
+                const container = document.createElement('div');
+                container.className = 'image-upload-container';
+                
+                // Create the first upload box with plus icon
+                const uploadBox = createImageUploadBox(hiddenInput, container);
+                container.appendChild(uploadBox);
+                
+                // Add the container and hidden input to the field div
+                fieldDiv.appendChild(container);
+                fieldDiv.appendChild(hiddenInput);
+                
+                // Return early as we've already added everything to fieldDiv
+                return fieldDiv;
+            } else {
+                input = document.createElement('input');
+                input.type = field.type;
+                input.name = field.name;
+                input.required = field.required !== false;
+            }
+            
+            fieldDiv.appendChild(input);
+            return fieldDiv;
+        }
+
+        // Function to create an image upload box
+        function createImageUploadBox(hiddenInput, container) {
+            const box = document.createElement('div');
+            box.className = 'image-upload-box';
+            
+            // Plus icon
+            const plus = document.createElement('span');
+            plus.className = 'plus-icon';
+            plus.textContent = '+';
+            box.appendChild(plus);
+            
+            // Remove button (initially hidden)
+            const removeBtn = document.createElement('div');
+            removeBtn.className = 'remove-btn';
+            removeBtn.textContent = '×';
+            box.appendChild(removeBtn);
+            
+            // Click event to open file dialog
+            box.addEventListener('click', function(e) {
+                if (e.target !== removeBtn) {
+                    hiddenInput.click();
+                }
+            });
+            
+            // Handle file selection
+            hiddenInput.addEventListener('change', function() {
+                if (this.files && this.files.length > 0) {
+                    // Remove existing empty upload box first to prevent duplicates
+                    const emptyBoxes = Array.from(container.querySelectorAll('.image-upload-box:not(.has-image)'));
+                    emptyBoxes.forEach(emptyBox => emptyBox.remove());
+                    
+                    // Process each file
+                    Array.from(this.files).forEach((file, index) => {
+                        // Create a new box for each image
+                        const newBox = document.createElement('div');
+                        newBox.className = 'image-upload-box';
+                        displayImageInBox(file, newBox, container, hiddenInput);
+                        container.appendChild(newBox);
+                    });
+                    
+                    // Always add only one new empty upload box at the end
+                    const newEmptyBox = createEmptyUploadBox(hiddenInput, container);
+                    container.appendChild(newEmptyBox);
+                    
+                    // Clear the input to allow selecting the same files again
+                    hiddenInput.value = '';
+                }
+            });
+            
+            // Handle remove button click
+            removeBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                box.remove();
+                
+                // If no empty box exists, add one
+                const emptyBoxExists = Array.from(container.children).some(
+                    child => child.classList.contains('image-upload-box') && !child.classList.contains('has-image')
+                );
+                
+                if (!emptyBoxExists) {
+                    const newEmptyBox = createEmptyUploadBox(hiddenInput, container);
+                    container.appendChild(newEmptyBox);
+                }
+            });
+            
+            return box;
+        }
+        
+        // Function to create an empty upload box
+        function createEmptyUploadBox(hiddenInput, container) {
+            const box = document.createElement('div');
+            box.className = 'image-upload-box';
+            
+            // Plus icon
+            const plus = document.createElement('span');
+            plus.className = 'plus-icon';
+            plus.textContent = '+';
+            box.appendChild(plus);
+            
+            // Click event to open file dialog
+            box.addEventListener('click', function() {
+                hiddenInput.click();
+            });
+            
+            return box;
+        }
+        
+        // Function to display an image in a box
+        function displayImageInBox(file, box, container, hiddenInput) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                box.style.backgroundImage = `url(${e.target.result})`;
+                box.classList.add('has-image');
+                
+                // Add remove button
+                const removeBtn = document.createElement('div');
+                removeBtn.className = 'remove-btn';
+                removeBtn.textContent = '×';
+                box.appendChild(removeBtn);
+                
+                // Handle remove button click
+                removeBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    box.remove();
+                    
+                    // Check if we need to add an empty box
+                    const emptyBoxExists = Array.from(container.children).some(
+                        child => child.classList.contains('image-upload-box') && !child.classList.contains('has-image')
+                    );
+                    
+                    if (!emptyBoxExists) {
+                        const newEmptyBox = createEmptyUploadBox(hiddenInput, container);
+                        container.appendChild(newEmptyBox);
+                    }
+                });
+            };
+            reader.readAsDataURL(file);
+        }
+    </script>
+</body>
+</html>
